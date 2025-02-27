@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}面包销售系统{% endblock %}</title>
+    <style>
+        /* 按钮样式 */
+        .login-status-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .login-status-button:hover {
+            background-color: #45a049;
+        }
+
+        /* 弹出菜单样式 */
+        .login-status-popup {
+            display: none;
+            position: fixed;
+            top: 45px;
+            right: 10px;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .login-status-popup a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .login-status-popup a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* 显示弹出菜单 */
+        .show {
+            display: block;
+        }
+    </style>
+    <script>
+        function togglePopup() {
+            var popup = document.getElementById("login-status-popup");
+            popup.classList.toggle("show");
+        }
+
+        // 点击窗口其他部分时关闭弹出菜单
+        window.onclick = function (event) {
+            if (!event.target.matches('.login-status-button')) {
+                var popups = document.getElementsByClassName("login-status-popup");
+                for (var i = 0; i < popups.length; i++) {
+                    var openPopup = popups[i];
+                    if (openPopup.classList.contains('show')) {
+                        openPopup.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body>
+    {% if user.is_authenticated %}
+        <button class="login-status-button" onclick="togglePopup()">欢迎，{{ user.username }}</button>
+        <div id="login-status-popup" class="login-status-popup">
+            <a href="{% url 'logout' %}">退出登录</a>
+            <a href="{% url 'login' %}">切换账号</a>
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}" style="position: fixed; top: 10px; right: 10px; background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none;">登录</a>
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>

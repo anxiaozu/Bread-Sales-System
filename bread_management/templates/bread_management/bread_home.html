@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>面包销售系统 - 首页</title>
+    <style>
+        /* 整体页面布局优化 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url('../../../static/images/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* 头部区域 */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 30px;
+            position: relative;
+        }
+
+        /* 卡通风格按钮 */
+        .button {
+            background-color: #fbc687;  /* 柔和的橙色 */
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease, transform 0.2s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        /* 按钮悬停动画 */
+        .button:hover {
+            background-color: #f5b16e;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        /* 登录按钮 */
+        .login-status-button {
+            background-color: #fbc687;
+            color: white;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .login-status-button:hover {
+            background-color: #f5b16e;
+            transform: translateY(-1px);
+        }
+
+        /* 登录状态弹出菜单 */
+        .login-status-popup {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 150px;
+            z-index: 10;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .login-status-popup a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-status-popup a:hover {
+            background-color: #fbc687;
+            color: white;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #d35400;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        /* 导航按钮 */
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            background-color: #fbc687;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            font-size: 15px;
+            min-width: 160px;
+        }
+
+        .nav-links a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background-color: #f5b16e;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        {% if user.is_authenticated %}
+            <button class="login-status-button" onclick="togglePopup()">欢迎，{{ user.username }}</button>
+            <div id="login-status-popup" class="login-status-popup">
+                <a href="{% url 'logout' %}">退出登录</a>
+                <a href="{% url 'login' %}">切换账号</a>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}" class="login-status-button">登录</a>
+        {% endif %}
+    </div>
+
+    <div class="main-content">
+        <h1>欢迎来到面包销售系统 🥖</h1>
+        <p>探索新鲜烘焙的美味，发现每日限定特色面包，享受温暖的手作滋味</p>
+
+        <div class="nav-links">
+            <a href="{% url 'bread_list' %}" class="button">🍞 面包列表</a>
+            <a href="{% url 'user_home' %}" class="button">🎯 个性推荐</a>
+            <a href="{% url 'order_query' %}" class="button">📦 订单查询</a>
+            <a href="{% url 'register' %}" class="register-button">✨ 新用户注册</a>
+        </div>
+    </div>
+
+    <!-- JavaScript 让弹出菜单工作 -->
+    <script>
+        function togglePopup() {
+            var popup = document.getElementById("login-status-popup");
+            popup.style.display = (popup.style.display === "block") ? "none" : "block";
+        }
+
+        // 点击其他区域时关闭弹窗
+        document.addEventListener("click", function(event) {
+            var popup = document.getElementById("login-status-popup");
+            var button = document.querySelector(".login-status-button");
+
+            if (!popup.contains(event.target) && event.target !== button) {
+                popup.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

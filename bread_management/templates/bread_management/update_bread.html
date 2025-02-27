@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>更新面包</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(45deg, #fceabb, #f8b500);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        input[type="checkbox"][name$="-clear"] {
+            display: none;
+        }
+
+        p img {
+            display: none;
+        }
+
+        p a {
+            display: none;
+        }
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #f8b500;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .alert {
+            border-radius: 10px;
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input,
+        form textarea,
+        form select {
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        form button {
+            background-color: #f8b500;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #e69500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        更新面包
+                    </div>
+                    <div class="card-body">
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            请修正以下错误：
+                            <ul>
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                            {{ form.name }}
+                            <p class="help-text">{{ form.name.help_text }}</p>
+
+                            <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                            {{ form.price }}
+                            <p class="help-text">{{ form.price.help_text }}</p>
+
+                            <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                            {{ form.description }}
+                            <p class="help-text">{{ form.description.help_text }}</p>
+
+                            <label for="{{ form.stock.id_for_label }}">{{ form.stock.label }}</label>
+                            {{ form.stock }}
+                            <p class="help-text">{{ form.stock.help_text }}</p>
+
+                            <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+                            {{ form.image }}
+                            <p class="help-text">{{ form.image.help_text }}</p>
+
+                            <label for="{{ form.hardness.id_for_label }}">{{ form.hardness.label }}</label>
+                            {{ form.hardness }}
+                            <p class="help-text">{{ form.hardness.help_text }}</p>
+
+                            <label for="{{ form.sugar_content.id_for_label }}">{{ form.sugar_content.label }}</label>
+                            {{ form.sugar_content }}
+                            <p class="help-text">{{ form.sugar_content.help_text }}</p>
+
+                            <button type="submit" class="btn btn-primary">更新面包</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

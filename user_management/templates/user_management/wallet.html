@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>我的钱包</title>
+    <style>
+        /* 整体页面样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #fff4e6, #ffe6e6); /* 柔和的背景色 */
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #6b4f4f;
+        }
+
+        /* 卡片样式 */
+        .wallet-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+        .wallet-section {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        /* 钱包余额样式 */
+        .wallet-balance {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        /* 充值记录样式 */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f8f8f8;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 按钮样式 */
+        .button {
+            display: inline-block;
+            padding: 10px 16px;
+            font-size: 16px;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .recharge-button {
+            background: #f39c12;
+            color: white;
+        }
+
+        .recharge-button:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            background: #007BFF;
+            color: white;
+        }
+
+        .back-button:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* 卡通钱包图标 */
+        .wallet-icon {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <h1>我的钱包</h1>
+
+    <!-- 钱包余额部分 -->
+    <div class="wallet-container">
+        <img src="https://i.imgur.com/jO6bwhk.png" class="wallet-icon" alt="钱包图标">
+        <div class="wallet-section">
+            <h2>钱包余额 💰</h2>
+            <p class="wallet-balance">{{ wallet.balance }} 元</p>
+        </div>
+
+        <!-- 充值记录部分 -->
+        <div class="wallet-section">
+            <h2>充值记录 📝</h2>
+            {% if recharge_records %}
+                <ul>
+                    {% for recharge in recharge_records %}
+                        <li>{{ recharge.date }} - 充值金额: {{ recharge.amount }} 元</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>暂无充值记录</p>
+            {% endif %}
+        </div>
+
+        <!-- 按钮 -->
+        <a href="{% url 'recharge_wallet' %}" class="button recharge-button">💳 充值</a>
+        <a href="{% url 'home' %}" class="button back-button">🏠 返回主页</a>
+    </div>
+
+</body>
+
+</html>

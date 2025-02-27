@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>添加面包</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(45deg, #fceabb, #f8b500);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #f8b500;
+            color: white;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            text-align: center;
+            font-size: 1.8rem;
+            padding: 1.2rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .alert {
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        form label {
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        form input,
+        form textarea,
+        form select,
+        form .custom-file-input {
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 0.8rem;
+            width: 100%;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s ease;
+        }
+
+        form input:focus,
+        form textarea:focus,
+        form select:focus,
+        form .custom-file-input:focus {
+            border-color: #f8b500;
+            box-shadow: 0 0 0 0.2rem rgba(248, 181, 0, 0.25);
+        }
+
+        form .custom-file-label {
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            padding: 0.8rem;
+            cursor: pointer;
+        }
+
+        form button {
+            background-color: #f8b500;
+            border: none;
+            border-radius: 5px;
+            padding: 0.8rem 1.5rem;
+            color: white;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #e69500;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        添加面包
+                    </div>
+                    <div class="card-body">
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            请修正以下错误：
+                            <ul>
+                                {% for field in form %}
+                                {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                                {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <!-- 新增部分 -->
+                            <label for="{{ form.hardness.id_for_label }}">{{ form.hardness.label }}</label>
+                            {{ form.hardness }}
+                            <p class="help-text">{{ form.hardness.help_text }}</p>
+
+                            <label for="{{ form.sugar_content.id_for_label }}">{{ form.sugar_content.label }}</label>
+                            {{ form.sugar_content }}
+                            <p class="help-text">{{ form.sugar_content.help_text }}</p>
+                            <!-- 原表单内容 -->
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">添加面包</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

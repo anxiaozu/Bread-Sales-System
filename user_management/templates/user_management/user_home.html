@@ -1,0 +1,200 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户主页</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #fff4e6, #ffe6e6); /* 柔和的背景色 */
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            position: relative;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #6b4f4f;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 添加可爱卡通背景 */
+        .cartoon-bg {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            opacity: 0.8;
+        }
+
+        .cartoon-bg-right {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            width: 100px;
+            opacity: 0.8;
+        }
+
+        /* 面包推荐和列表样式 */
+        .bread-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .bread-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            padding: 20px;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .bread-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .bread-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        /* 按钮样式 */
+        .button {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: #ff9f43;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .button:hover {
+            background: #ff7b00;
+            transform: scale(1.05);
+        }
+
+        /* 链接按钮 */
+        .link-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .link-container a {
+            margin: 10px;
+            padding: 10px 16px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .link-container a:hover {
+            background: #388E3C;
+        }
+        .cartoon-bg {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            opacity: 0.8;
+        }
+
+        .cartoon-bg-right {
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            width: 100px;
+            opacity: 0.8;
+        }
+
+/* 让左侧的图片水平翻转（镜像） */
+        .mirror-image {
+            transform: scaleX(-1);
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- 可爱的卡通形象 -->
+    <img src="{% static 'images/shidizai.png' %}" class="cartoon-bg mirror-image" alt="史迪仔">
+    <img src="{% static 'images/shidizai.png' %}" class="cartoon-bg-right" alt="史迪仔笑脸">
+
+
+    <h1>欢迎来到面包销售平台 🍞</h1>
+
+    <!-- 每日面包推荐 -->
+    {% if recommended_breads %}
+        <h2>为你推荐的面包 🍩</h2>
+        <div class="bread-container">
+            {% for bread in recommended_breads %}
+                <div class="bread-card">
+                    <h3>{{ bread.name }}</h3>
+                    {% if bread.image %}
+                        <img src="{{ bread.image.url }}" alt="{{ bread.name }}">
+                    {% else %}
+                        <p>暂无图片</p>
+                    {% endif %}
+                    {% if bread.stock > 0 %}
+                        <!-- 修改跳转链接为 bread_detail.html -->
+                        <a href="{% url 'bread_detail' bread.id %}" class="button">点击购买</a>
+                    {% else %}
+                        <p style="color: red; font-weight: bold;">已售罄</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- 所有面包列表 -->
+    <h2>所有面包 🥖</h2>
+    <div class="bread-container">
+        {% for bread in all_breads %}
+            <div class="bread-card">
+                <h3>{{ bread.name }}</h3>
+                {% if bread.image %}
+                    <img src="{{ bread.image.url }}" alt="{{ bread.name }}">
+                {% else %}
+                    <p>暂无图片</p>
+                {% endif %}
+                {% if bread.stock > 0 %}
+                    <!-- 修改跳转链接为 bread_detail.html -->
+                    <a href="{% url 'bread_detail' bread.id %}" class="button">点击购买</a>
+                {% else %}
+                    <p style="color: red; font-weight: bold;">已售罄</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- 操作链接 -->
+    <div class="link-container">
+        {% if user.is_staff %}
+            <a href="{% url 'admin_dashboard' %}">管理员面板</a>
+        {% endif %}
+        <a href="{% url 'wallet' %}">我的钱包</a>
+        <a href="{% url 'logout' %}">注销</a>
+        <a href="{% url 'bread_list' %}">返回面包列表</a>
+    </div>
+</body>
+
+</html>

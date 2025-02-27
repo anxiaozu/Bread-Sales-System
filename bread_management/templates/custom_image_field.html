@@ -1,0 +1,8 @@
+<!-- custom_image_field.html -->
+<div class="custom-image-field-container">
+    <label for="{{ widget.attrs.id }}">{{ widget.label }}</label>
+    <input type="{{ widget.type }}" name="{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+    {% if widget.help_text %}
+        <p class="help-text">{{ widget.help_text }}</p>
+    {% endif %}
+</div>

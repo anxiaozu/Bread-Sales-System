@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>库存不足</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+       .message-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+       .message-box h1 {
+            color: #d9534f;
+        }
+       .message-box p {
+            margin-bottom: 20px;
+        }
+       .message-box a {
+            background-color: #5bc0de;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+       .message-box a:hover {
+            background-color: #31b0d5;
+        }
+    </style>
+</head>
+<body>
+    <div class="message-box">
+        <h1>库存不足</h1>
+        <p>很抱歉，当前面包的库存不足以满足您的订单需求。请选择其他商品或稍后再来。</p>
+        <a href="{% url 'bread_list' %}">返回面包列表</a>
+    </div>
+</body>
+</html>

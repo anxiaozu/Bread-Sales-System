@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}订单查询{% endblock %}
+
+{% block content %}
+    <div class="order-query-container">
+        <h1 class="order-query-title">订单查询</h1>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+        <form method="post" id="order-form">
+            {% csrf_token %}
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th>选择</th>
+                        <th>面包名称</th>
+                        <th>数量</th>
+                        <th>总价</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td><input type="checkbox" name="order_ids" value="{{ order.id }}" class="order-checkbox"></td>
+                            <td>{{ order.bread.name }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.total_price }}</td>
+                            <td>
+                                <form method="post" action="{% url 'cancel_order' order.id %}" class="cancel-order-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                                    <input type="submit" value="取消订单" class="cancel-button">
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <input type="button" value="结账" class="pay-button" onclick="handleCheckout()">
+        </form>
+
+        <a href="{% url 'home' %}" class="return-home-link">返回面包首页</a>
+    </div>
+
+    <!-- 充值弹窗，初始设置为隐藏 -->
+    <div id="recharge-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h2>余额不足</h2>
+            <p>您的账户余额不足，无法完成结账。请先充值。</p>
+            <a href="{% url 'recharge_wallet' %}" class="recharge-button">立即充值</a>
+            <button class="modal-close" onclick="closeModal()">取消</button>
+        </div>
+    </div>
+
+    <style>
+        .order-query-container {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-query-title {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .error-message {
+            color: #ff0000;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .order-table th, .order-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #f2f2f2;
+        }
+
+        .pay-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .pay-button:hover {
+            background-color: #45a049;
+        }
+
+        .cancel-button {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .cancel-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .return-home-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .return-home-link:hover {
+            color: #2980b9;
+        }
+
+        /* 充值模态框 */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .recharge-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .recharge-button:hover {
+            background-color: #1976D2;
+        }
+
+        .modal-close {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ccc;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .modal-close:hover {
+            background-color: #bbb;
+        }
+    </style>
+
+    <script>
+        function handleCheckout() {
+            let selectedOrders = document.querySelectorAll(".order-checkbox:checked");
+            if (selectedOrders.length === 0) {
+                alert("请选择要结账的订单！");
+                return;
+            }
+
+            // 确保 userBalance 是数值类型
+            let rawUserBalance = "{{ user_balance|default:0 }}";
+            let userBalance = parseFloat(rawUserBalance);
+
+            let totalAmount = 0;
+
+            selectedOrders.forEach(order => {
+                let row = order.closest("tr");
+                let priceCell = row.cells[3];
+                let priceText = priceCell.innerText.trim();
+                // 检查价格文本是否可以转换为数字
+                if (!isNaN(priceText)) {
+                    let price = parseFloat(priceText);
+                    totalAmount += price;
+                } else {
+                    console.error("无法将价格转换为数字:", priceText);
+                }
+            });
+
+            // 使用 toFixed 来处理精度问题
+            totalAmount = parseFloat(totalAmount.toFixed(2));
+            userBalance = parseFloat(userBalance.toFixed(2));
+
+            if (totalAmount > userBalance) {
+                // 余额不足，显示充值弹窗
+                document.getElementById("recharge-modal").style.display = "flex";
+            } else {
+                // 余额充足，提交表单
+                document.getElementById("order-form").submit();
+            }
+        }
+
+        function closeModal() {
+            // 关闭充值弹窗
+            document.getElementById("recharge-modal").style.display = "none";
+        }
+    </script>
+{% endblock %}

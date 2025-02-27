@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 响应式布局必备 -->
+    <title>面包列表</title>
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(45deg, #fceabb, #f8b500);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            perspective: 1000px; /* 添加透视效果 */
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: #8B4513;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-size: 2em; /* 减小标题字体大小，适应小屏幕 */
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite; /* 添加浮动动画 */
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* 容器样式 */
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px; /* 减小容器内边距 */
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+            transform-style: preserve-3d; /* 保持 3D 变换 */
+            transition: transform 0.5s ease;
+            width: 90%; /* 让容器宽度自适应屏幕 */
+            max-width: 1200px; /* 最大宽度限制 */
+        }
+
+        .container:hover {
+            transform: rotateX(5deg) rotateY(5deg); /* 鼠标悬停时的 3D 旋转效果 */
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+            perspective: 1000px; /* 添加透视效果 */
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        th,
+        td {
+            padding: 10px; /* 减小表格单元格内边距 */
+            text-align: center;
+            white-space: nowrap; /* 防止文本换行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 超出部分显示省略号 */
+        }
+
+        thead {
+            background-color: #f8b500;
+            color: white;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        tbody tr {
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tbody tr:hover {
+            background-color: #ddd;
+            transform: scale(1.02); /* 鼠标悬停时放大行 */
+        }
+
+        /* 面包图片样式 */
+        .bread-image {
+            max-width: 50px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        /* 链接和按钮样式 */
+        a {
+            color: #8B4513;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        a:hover {
+            color: #f8b500;
+            transform: scale(1.1); /* 鼠标悬停时放大链接 */
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 15px; /* 减小按钮内边距 */
+            background-color: #f8b500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            margin-right: 5px;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .button:hover {
+            background-color: #e69500;
+            transform: scale(1.05); /* 鼠标悬停时放大按钮 */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 删除按钮样式 */
+        .delete-button {
+            background-color: #ff6b6b;
+        }
+
+        .delete-button:hover {
+            background-color: #ff4757;
+        }
+
+        /* 分页样式 */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* 分页链接换行显示 */
+        }
+
+        .pagination a {
+            margin: 5px;
+            padding: 5px 10px;
+            border: 1px solid #f8b500;
+            border-radius: 3px;
+        }
+
+        .pagination a.active {
+            background-color: #f8b500;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="{% url 'bread_list' %}">面包列表</a>
+        <div style="overflow-x: auto;"> <!-- 表格水平滚动 -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>面包图片</th>
+                        <th>面包名称</th>
+                        <th>价格</th>
+                        <th>描述</th>
+                        <th>库存</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if breads %}
+                        {% for bread in breads %}
+                        <tr>
+                            <td><img src="{{ bread.image.url }}" alt="{{ bread.name }}" class="bread-image"></td>
+                            <td>{{ bread.name }}</td>
+                            <td>{{ bread.price }}</td>
+                            <td>{{ bread.description }}</td>
+                            <td>{{ bread.stock }}</td>
+                            <td>
+                                <a href="{% url 'bread_detail' bread.id %}" class="button">查看详情</a>
+                                {% if is_admin %}
+                                <a href="{% url 'update_bread' bread.id %}" class="button">更新</a>
+                                {% endif %}
+                                {% if is_admin %}
+                                <a href="{% url 'delete_bread' bread.id %}" class="button delete-button">删除</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="5">暂无面包数据</td></tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页导航 -->
+        <div class="pagination">
+            {% if breads.has_previous %}
+            <a href="?page=1">&laquo; 首页</a>
+            <a href="?page={{ breads.previous_page_number }}">上一页</a>
+            {% endif %}
+
+            {% for num in breads.paginator.page_range %}
+            {% if breads.number == num %}
+            <a href="?page={{ num }}" class="active">{{ num }}</a>
+            {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+            {% endfor %}
+
+            {% if breads.has_next %}
+            <a href="?page={{ breads.next_page_number }}">下一页</a>
+            <a href="?page={{ breads.paginator.num_pages }}">尾页 &raquo;</a>
+            {% endif %}
+        </div>
+        <!-- 添加面包按钮 -->
+        {% if is_admin %}
+        <a href="{% url 'add_bread' %}" class="button">添加面包</a>
+        {% endif %}
+        <a href="{% url 'home' %}" class="button">返回首页</a>
+    </div>
+</body>
+
+</html>
