@@ -16,16 +16,13 @@ Bread-Sales-System/ ├── bread_management/ # 面包相关管理模块（如
 
 ## 安装与配置
 
-1. **克隆仓库**
-
+1.**克隆仓库**
    git clone https://github.com/anxiaozu/Bread-Sales-System.git
    cd Bread-Sales-System
 2.**创建虚拟环境并激活**
-
-
    python3 -m venv venv
    source venv/bin/activate  # Linux/macOS
-   # Windows: venv\Scripts\activate
+   Windows: venv\Scripts\activate
 3.**安装依赖**
    pip install -r requirements.txt
 4.**数据库迁移**
@@ -33,14 +30,10 @@ Bread-Sales-System/ ├── bread_management/ # 面包相关管理模块（如
 5.**运行项目**
    python manage.py runserver
    访问 http://127.0.0.1:8000/ 即可查看系统首页。
-
-6.**智能推荐模块**
+6. **智能推荐模块**
    推荐模块基于两种算法：
       KNN（最近邻算法）：根据用户的历史行为与相似用户的偏好，初步筛选合适的产品。
       DNN（深度神经网络）：进一步结合用户的年龄、行为数据等多维度信息，生成个性化推荐结果。
-
-开发者可以在各自的业务模块中找到算法实现和数据处理逻辑，根据需要进行调优和扩展。
-
 7.**性能测试**
    项目中包含 locustfile.py 文件，使用 Locust 进行负载测试。安装依赖后，可使用以下命令启动 Locust：
    locust -f locustfile.py
