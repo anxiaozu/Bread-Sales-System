@@ -1,0 +1,8 @@
+django==4.2.18
+locust
+tensorflow
+keras
+numpy
+scikit-learn
+pandas
+Pillow
